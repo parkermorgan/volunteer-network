@@ -1,49 +1,62 @@
-<div class="form-container">
-  <h2>Create a New Volunteer Project</h2>
-  
-  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
-    
-    <div class="form-group">
-      <label for="title">Project Title</label>
-      <input id="title" type="text" formControlName="title" placeholder="e.g. Build Food Bank Website">
-      <div *ngIf="projectForm.get('title')?.touched && projectForm.get('title')?.invalid" class="error">
-        Title is required (minimum 5 characters).
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h2 class="h5 mb-0">Create a New Volunteer Project</h2>
+        </div>
+        <div class="card-body p-4">
+          <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+            
+            <div class="mb-3">
+              <label for="title" class="form-label fw-bold">Project Title</label>
+              <input id="title" type="text" class="form-control" 
+                     [class.is-invalid]="projectForm.get('title')?.touched && projectForm.get('title')?.invalid"
+                     formControlName="title" placeholder="e.g. Build Food Bank Website">
+              <div class="invalid-feedback">Title is required (minimum 5 characters).</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label fw-bold">Description</label>
+              <textarea id="description" class="form-control" rows="4" 
+                        [class.is-invalid]="projectForm.get('description')?.touched && projectForm.get('description')?.invalid"
+                        formControlName="description" placeholder="Describe the project objective..."></textarea>
+              <div class="invalid-feedback">Description is required (minimum 10 characters).</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="location" class="form-label fw-bold">Location</label>
+              <input id="location" type="text" class="form-control" 
+                     [class.is-invalid]="projectForm.get('location')?.touched && projectForm.get('location')?.invalid"
+                     formControlName="location" placeholder="e.g. Remote, or Rexburg, ID">
+              <div class="invalid-feedback">Location is required.</div>
+            </div>
+
+            <div class="mb-4">
+              <label for="skillsInput" class="form-label fw-bold">Required Skills</label>
+              <div class="input-group">
+                <input id="skillsInput" type="text" class="form-control" formControlName="skillsInput" placeholder="e.g. Angular">
+                <button type="button" class="btn btn-outline-secondary" (click)="addSkill()">Add Skill</button>
+              </div>
+
+              <div class="mt-2">
+                <span *ngFor="let skill of projectForm.get('requiredSkills')?.value" 
+                      class="badge bg-info text-dark me-2 p-2">
+                  {{ skill }} 
+                  <span class="ms-1 border-start ps-1 text-danger" style="cursor:pointer" (click)="removeSkill(skill)">×</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="projectForm.invalid || isSubmitting">
+                {{ isSubmitting ? 'Posting...' : 'Post Project' }}
+              </button>
+            </div>
+
+          </form>
+        </div>
       </div>
     </div>
-
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" formControlName="description" rows="4" placeholder="Describe the project objective..."></textarea>
-      <div *ngIf="projectForm.get('description')?.touched && projectForm.get('description')?.invalid" class="error">
-        Description is required (minimum 10 characters).
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="location">Location</label>
-      <input id="location" type="text" formControlName="location" placeholder="e.g. Remote, or Rexburg, ID">
-      <div *ngIf="projectForm.get('location')?.touched && projectForm.get('location')?.invalid" class="error">
-        Location is required.
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="skillsInput">Required Skills</label>
-      <div class="skills-input-group">
-        <input id="skillsInput" type="text" formControlName="skillsInput" placeholder="e.g. Angular (Press Add)">
-        <button type="button" class="btn btn-secondary" (click)="addSkill()">Add Skill</button>
-      </div>
-
-      <div class="skills-tags" style="margin-top: 10px;">
-        <span *ngFor="let skill of projectForm.get('requiredSkills')?.value" class="tag">
-          {{ skill }} <span class="remove-tag" (click)="removeSkill(skill)">×</span>
-        </span>
-      </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary" [disabled]="projectForm.invalid || isSubmitting">
-      {{ isSubmitting ? 'Posting...' : 'Post Project' }}
-    </button>
-
-  </form>
+  </div>
 </div>

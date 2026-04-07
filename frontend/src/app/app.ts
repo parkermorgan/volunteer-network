@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router'; // <-- ADD THESE IMPORTS
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router'; 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive], // <-- ADD RouterLink AND RouterLinkActive HERE
+  imports: [RouterOutlet, RouterLink, RouterLinkActive], 
   templateUrl: './app.html',
-  styleUrl: './app.css' // (or app.component.css depending on how your file is named)
+  styleUrl: './app.css' 
 })
 export class AppComponent {
   title = 'frontend';

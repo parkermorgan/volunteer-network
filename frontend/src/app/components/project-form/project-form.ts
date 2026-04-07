@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProjectService } from '../../services/project';
+import { ProjectService, Project } from '../../services/project';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs'; 
 
 @Component({
   selector: 'app-project-form',
@@ -10,17 +12,44 @@ import { ProjectService } from '../../services/project';
   templateUrl: './project-form.html',
   styleUrl: './project-form.css'
 })
-export class ProjectFormComponent implements OnInit {
+export class ProjectFormComponent implements OnInit, OnDestroy {
   projectForm!: FormGroup;
   isSubmitting = false;
+  isEditMode = false; // Track if we are editing
+  editingProjectId: string | undefined = undefined;
+  subscription!: Subscription;
 
   constructor(
     private fb: FormBuilder,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private router: Router // Inject router
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+
+    // Listen to see if we are editing a project
+    this.subscription = this.projectService.currentProjectToEdit.subscribe(project => {
+      if (project) {
+        this.isEditMode = true;
+        this.editingProjectId = project._id;
+        
+        // Patch the form with the existing data!
+        this.projectForm.patchValue({
+          title: project.title,
+          description: project.description,
+          location: project.location,
+          requiredSkills: project.requiredSkills,
+          status: project.status
+        });
+      }
+    });
+  }
+
+  // Unsubscribe when the component closes to prevent memory leaks
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.projectService.clearEditProject(); // Clear the state
   }
 
   initForm(): void {
@@ -28,27 +57,23 @@ export class ProjectFormComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
       location: ['', Validators.required],
-      skillsInput: [''], // Temporary field to hold typed skills
-      requiredSkills: [[] as string[]], // The actual array being sent
+      skillsInput: [''],
+      requiredSkills: [[] as string[]],
       status: ['Open']
     });
   }
 
-  // Method to add a skill from the input field to the array
   addSkill(): void {
     const skillValue = this.projectForm.get('skillsInput')?.value?.trim();
     if (skillValue) {
       const currentSkills = this.projectForm.get('requiredSkills')?.value as string[];
-      
       if (!currentSkills.includes(skillValue)) {
         this.projectForm.get('requiredSkills')?.setValue([...currentSkills, skillValue]);
       }
-      
-      this.projectForm.get('skillsInput')?.setValue(''); // Clear input
+      this.projectForm.get('skillsInput')?.setValue(''); 
     }
   }
 
-  // Method to remove a skill from the array
   removeSkill(skill: string): void {
     const currentSkills = this.projectForm.get('requiredSkills')?.value as string[];
     this.projectForm.get('requiredSkills')?.setValue(currentSkills.filter(s => s !== skill));
@@ -56,21 +81,25 @@ export class ProjectFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.projectForm.invalid) return;
-
-    this.isSubmitting = true;
+    this.isSubmitting = true; // Button turns gray
     
-    // Extract everything except the temporary skillsInput field
     const { skillsInput, ...projectData } = this.projectForm.value;
 
-    this.projectService.createProject(projectData).subscribe({
+    const request = this.isEditMode && this.editingProjectId
+      ? this.projectService.updateProject(this.editingProjectId, projectData)
+      : this.projectService.createProject(projectData);
+
+    request.subscribe({
       next: (response) => {
-        alert('Project created successfully!');
-        this.projectForm.reset({ status: 'Open', requiredSkills: [] });
-        this.isSubmitting = false;
+        console.log('Success!', response);
+        alert('Project saved successfully!');
+        this.isSubmitting = false; // Reset button
+        this.router.navigate(['/']); 
       },
       error: (err) => {
-        console.error('Error creating project:', err);
-        this.isSubmitting = false;
+        console.error('Frontend Error:', err);
+        alert('Failed to save project. Check console for details.');
+        this.isSubmitting = false; // Reset button so user can try again
       }
     });
   }
