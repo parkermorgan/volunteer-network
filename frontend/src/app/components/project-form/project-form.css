@@ -8,10 +8,6 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-.form-group {
-  margin-bottom: 20px;
-}
-
 label {
   display: block;
   font-weight: 600;
@@ -31,16 +27,7 @@ input[type="text"], textarea {
   gap: 10px;
 }
 
-.tag {
-  display: inline-block;
-  background: #007bff;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 20px;
-  margin-right: 8px;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
+
 
 .remove-tag {
   margin-left: 6px;

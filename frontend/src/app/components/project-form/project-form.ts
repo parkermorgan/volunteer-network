@@ -79,6 +79,19 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     this.projectForm.get('requiredSkills')?.setValue(currentSkills.filter(s => s !== skill));
   }
 
+  resetForm(): void {
+    this.isEditMode = false;
+    this.editingProjectId = undefined;
+    this.isSubmitting = false;
+    
+    this.projectForm.reset({
+      status: 'Open',
+      requiredSkills: []
+    });
+    
+    this.projectService.clearEditProject();
+  }
+
   onSubmit(): void {
     if (this.projectForm.invalid) return;
     this.isSubmitting = true; // Button turns gray

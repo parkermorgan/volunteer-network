@@ -49,9 +49,16 @@
             </div>
 
             <div class="d-grid">
-              <button type="submit" class="btn btn-primary btn-lg" [disabled]="projectForm.invalid || isSubmitting">
-                {{ isSubmitting ? 'Posting...' : 'Post Project' }}
-              </button>
+              <button type="submit" 
+                  [class]="isEditMode ? 'btn btn-warning w-100' : 'btn btn-primary w-100'" 
+                  [disabled]="projectForm.invalid">
+                    <i class="bi" [class.bi-check-circle]="!isEditMode" [class.bi-pencil-square]="isEditMode"></i>
+                    {{ isEditMode ? 'Update Project Details' : 'Post New Project' }}
+                  </button>
+
+                  <button *ngIf="isEditMode" type="button" class="btn btn-link w-100 mt-2" (click)="resetForm()">
+                    Cancel Edit
+                  </button>
             </div>
 
           </form>

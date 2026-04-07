@@ -11,13 +11,6 @@
   margin-top: 20px;
 }
 
-.project-card {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
 
 .project-card.filled {
   opacity: 0.7;
@@ -65,3 +58,27 @@
 
 .btn-edit { background: #ffc107; color: black; }
 .btn-delete { background: #dc3545; color: white; }
+
+/* Gives each card a clear boundary and a soft shadow */
+.card {
+  border: 1px solid #e0e0e0 !important;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background-color: #ffffff;
+}
+
+/* Makes the card lift up when you hover over it */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12) !important;
+  border-color: #0d6efd !important; /* Changes border to blue on hover */
+}
+
+/* Adds a vertical line on the left to color-code by status */
+.card-body {
+  border-left: 5px solid #0d6efd; /* Blue for Open */
+  border-radius: 4px 0 0 4px;
+}
+
+.opacity-75 .card-body {
+  border-left-color: #dc3545; /* Red for Filled */
+}
