@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProjectService, Project } from '../../services/project';
-import { Router } from '@angular/router'; // <-- ADD THIS
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-project-list',
@@ -13,7 +13,6 @@ import { Router } from '@angular/router'; // <-- ADD THIS
 export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
 
-  // Add router to the constructor
   constructor(private projectService: ProjectService, private router: Router) {}
 
   ngOnInit(): void {
@@ -27,10 +26,9 @@ export class ProjectListComponent implements OnInit {
     });
   }
 
-  // ADD THIS METHOD
   editProject(project: Project): void {
-    this.projectService.setEditProject(project); // Broadcast the project
-    this.router.navigate(['/create']); // Navigate to the form page
+    this.projectService.setEditProject(project); 
+    this.router.navigate(['/create']); 
   }
 
   deleteProject(id: string | undefined): void {
